@@ -9,7 +9,7 @@ output "container_url" {
   value       = "https://${azurerm_storage_account.this.name}.blob.core.windows.net/${azurerm_storage_container.this.name}"
 }
 
-output "container_url_full" {
+output "sas_url_full" {
   description = "The URL of the storage container"
   sensitive   = true
   value       = "https://${azurerm_storage_account.this.name}.blob.core.windows.net/${azurerm_storage_container.this.name}${data.azurerm_storage_account_blob_container_sas.this.sas}"
