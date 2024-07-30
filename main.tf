@@ -1,3 +1,7 @@
+data "http" "icanhazip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
 resource "azurerm_resource_group" "this" {
   name     = var.resource_group_name     # name of the resource group
   location = var.resource_group_location # location of the resource group
@@ -23,13 +27,9 @@ resource "azurerm_storage_account" "this" {
     choice = "InternetRouting" # Internet routing, https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#routing-preference
   }
   network_rules {
-    bypass         = ["Logging", "Metrics", "AzureServices"] # Azure services bypass, https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#bypass
-    default_action = "Deny"                                  # Deny by default, https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#default-action
-    ip_rules       = var.ip_rules                            # No IP rules, https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#ip-rules
-  }
-  sas_policy {
-    expiration_action = "Log"         # Log SAS policy, https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#sas-policy
-    expiration_period = "30.00:00:00" # 30 day expiration period, https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#sas-policy
+    bypass         = ["Logging", "Metrics", "AzureServices"]                           # Azure services bypass, https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#bypass
+    default_action = "Deny"                                                            # Deny by default, https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#default-action
+    ip_rules       = distinct(concat([chomp(data.http.icanhazip.body)], var.ip_rules)) # IP rules, https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#ip-rules
   }
   tags = var.storage_account_tags # tags for the storage account
 }
