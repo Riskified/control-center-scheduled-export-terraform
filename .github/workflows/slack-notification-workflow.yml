@@ -1,0 +1,16 @@
+name: slack-notify
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - main
+      - master
+    paths:
+      - '.infrastructure/**'
+jobs:
+  slackNotification:
+    permissions:
+      contents: read
+    uses: Riskified/github-actions-workflows/.github/workflows/slack-notification-workflow.yml@upgrade-workflows
+    secrets:
+      slack_webhook: ${{ secrets.SLACK_WEBHOOK_TF_PRS }}
