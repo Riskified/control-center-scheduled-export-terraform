@@ -11,6 +11,6 @@ jobs:
   slackNotification:
     permissions:
       contents: read
-    uses: Riskified/github-actions-workflows/.github/workflows/slack-notification-workflow.yml@upgrade-workflows
+    uses: Riskified/github-actions-workflows/.github/workflows/slack-notification-workflow.yml@main
     secrets:
       slack_webhook: ${{ secrets.SLACK_WEBHOOK_TF_PRS }}
